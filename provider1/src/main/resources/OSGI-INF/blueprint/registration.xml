@@ -1,6 +1,6 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
 
-	<service interface="test.api.UiComponentFactory">
+	<service auto-export="all-classes">
 		<service-properties>
 			<entry key="bla" value="blub" />
 		</service-properties>

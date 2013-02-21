@@ -1,5 +1,8 @@
 package test.consumer.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -14,36 +17,48 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
+import com.google.common.collect.Lists;
+
 import test.api.UiComponentFactory;
+import test.api.UiComponentFactoryR2;
 
 public class Activator implements BundleActivator {
 
 	private Main main;
-	private ServiceTracker<UiComponentFactory, JComponent> tracker;
+	private ServiceTracker<UiComponentFactory, List<JComponent>> tracker;
 
 	public void start(BundleContext context) throws Exception {
 		main = new Main();
 		System.out.println("started");
-		tracker = new ServiceTracker<UiComponentFactory, JComponent>(
-				context,
-				FrameworkUtil
-						.createFilter("(&(objectClass=test.api.UiComponentFactory)(bla=blub))"),
-				null) {
+		// FrameworkUtil
+		// .createFilter("(&(objectClass=test.api.UiComponentFactory)(bla=blub))")
+		tracker = new ServiceTracker<UiComponentFactory, List<JComponent>>(
+				context, UiComponentFactory.class, null) {
 			@Override
-			public JComponent addingService(
+			public List<JComponent> addingService(
 					ServiceReference<UiComponentFactory> reference) {
 				UiComponentFactory service = context.getService(reference);
-				JComponent component = service.createIdentityRepresentation();
-				main.addComponent(component);
+				List<JComponent> components = new ArrayList<>();
+				JComponent comp1 = service.createIdentityRepresentation();
+				components.add(comp1);
+				main.addComponent(comp1);
+				if (service instanceof UiComponentFactoryR2) {
+					JComponent comp2 = ((UiComponentFactoryR2) service)
+							.createIdentitiyRepresentationButCooler();
+					components.add(comp2);
+					main.addComponent(comp2);
+				}
 				context.ungetService(reference);
-				return component;
+				return components;
 			}
 
 			@Override
 			public void removedService(
 					ServiceReference<UiComponentFactory> reference,
-					JComponent service) {
-				main.removeComponent(service);
+					List<JComponent> service) {
+				for (JComponent jComponent : service) {
+					main.removeComponent(jComponent);
+				}
 			}
 		};
 		tracker.open();
