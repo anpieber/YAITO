@@ -1,5 +1,8 @@
 package test.provider.internal;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
+
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -17,13 +20,15 @@ public class Activator implements BundleActivator {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		System.out.println("starting provider2");
+		Dictionary<String, String> prop = new Hashtable<>();
+		prop.put("bla", "blub");
 		registration = context.registerService(UiComponentFactory.class,
 				new UiComponentFactory() {
 					@Override
 					public JComponent createIdentityRepresentation() {
 						return new JLabel("Provider 2");
 					}
-				}, null);
+				}, prop);
 	}
 
 	@Override

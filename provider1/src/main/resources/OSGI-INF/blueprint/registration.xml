@@ -1,7 +1,10 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
 
-	<service interface="test.api.UiComponentFactory" ref="factoryBean">
-		<bean id="factoryBean" class="test.provider.internal.Provider1IdentitiyFactory" />
+	<service interface="test.api.UiComponentFactory">
+		<service-properties>
+			<entry key="bla" value="blub" />
+		</service-properties>
+		<bean class="test.provider.internal.Provider1IdentitiyFactory" />
 	</service>
 
 </blueprint>

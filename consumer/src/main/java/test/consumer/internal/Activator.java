@@ -3,12 +3,14 @@ package test.consumer.internal;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -22,8 +24,11 @@ public class Activator implements BundleActivator {
 	public void start(BundleContext context) throws Exception {
 		main = new Main();
 		System.out.println("started");
-		tracker = new ServiceTracker<UiComponentFactory, JComponent>(context,
-				UiComponentFactory.class, null) {
+		tracker = new ServiceTracker<UiComponentFactory, JComponent>(
+				context,
+				FrameworkUtil
+						.createFilter("(&(objectClass=test.api.UiComponentFactory)(bla=blub))"),
+				null) {
 			@Override
 			public JComponent addingService(
 					ServiceReference<UiComponentFactory> reference) {
@@ -55,6 +60,7 @@ public class Activator implements BundleActivator {
 		public Main() {
 			getContentPane().setLayout(
 					new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+			getContentPane().add(new JLabel("DEFAULT IS ME"));
 		}
 
 		public void addComponent(final JComponent component) {
