@@ -1,23 +1,27 @@
 package test.provider.internal;
 
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-import test.api.DoSomething;
+import test.api.UiComponentFactory;
 
 public class Activator implements BundleActivator {
 
-	ServiceRegistration<DoSomething> registration;
+	ServiceRegistration<UiComponentFactory> registration;
 
 	@Override
 	public void start(BundleContext context) throws Exception {
 		System.out.println("starting provider2");
-		registration = context.registerService(DoSomething.class,
-				new DoSomething() {
+		registration = context.registerService(UiComponentFactory.class,
+				new UiComponentFactory() {
 					@Override
-					public String now() {
-						return "what the hell __2__";
+					public JComponent createIdentityRepresentation() {
+						return new JLabel("Provider 2");
 					}
 				}, null);
 	}
